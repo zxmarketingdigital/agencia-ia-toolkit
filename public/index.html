@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Toolkit Agência IA — Área de Membros</title>
+<meta name="description" content="12 ferramentas + 2 dashboards prontos pra você entregar Agência IA aos seus 3 primeiros clientes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #12121a;
+  --bg3: #16161f;
+  --bg4: #1c1c28;
+  --border: #1e1e2e;
+  --border2: rgba(217,119,6,0.25);
+  --text: #e8e8ed;
+  --text2: #8b8b9e;
+  --text3: #5a5a6e;
+  --gold: #D97706;
+  --gold-light: #F59E0B;
+  --gold-bright: #FCD34D;
+  --gold-dark: #92400e;
+  --grad-gold: linear-gradient(135deg, #92400e, #D97706, #F59E0B, #FCD34D);
+  --green: #10b981;
+  --red: #f43f5e;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { background: var(--bg); color: var(--text); min-height: 100%; }
+body {
+  font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(217,119,6,0.10), transparent 60%),
+    radial-gradient(900px 500px at -10% 30%, rgba(245,158,11,0.07), transparent 60%),
+    var(--bg);
+}
+.mono { font-family: 'JetBrains Mono', monospace; }
+button, .btn { font-family: inherit; cursor: pointer; border: none; }
+input, textarea { font-family: inherit; color: var(--text); }
+a { color: var(--gold-light); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* LOGIN */
+.login-bg {
+  position: fixed; inset: 0; display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  background:
+    radial-gradient(800px 500px at 50% 30%, rgba(217,119,6,0.15), transparent 70%),
+    var(--bg);
+  z-index: 1000;
+}
+.login-bg[data-hidden] { display: none; }
+.login-box {
+  width: 100%; max-width: 420px;
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 18px;
+  padding: 36px 32px;
+}
+.login-logo { font-family: 'JetBrains Mono', monospace; color: var(--gold-light); font-size: 13px; margin-bottom: 22px; }
+.login-logo .dot { color: var(--text3); margin: 0 6px; }
+.login-box h1 { font-size: 24px; font-weight: 800; margin-bottom: 6px; letter-spacing: -.3px; }
+.login-box p { color: var(--text2); font-size: 14px; margin-bottom: 22px; }
+.login-field { margin-bottom: 12px; }
+.login-field label { display: block; font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: .8px; font-weight: 600; margin-bottom: 6px; }
+.login-field input {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 10px;
+  padding: 11px 14px; font-size: 14px;
+}
+.login-field input:focus { border-color: var(--gold); }
+.login-btn {
+  width: 100%; padding: 12px; border-radius: 10px;
+  background: var(--gold); color: #0a0a0f; font-weight: 700; font-size: 14px;
+  margin-top: 8px;
+  transition: all .15s;
+}
+.login-btn:hover { background: var(--gold-light); }
+.login-hint { margin-top: 14px; font-size: 12px; color: var(--text3); text-align: center; }
+
+/* APP */
+.app[data-hidden] { display: none; }
+
+/* HEADER */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(10,10,15,0.85); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 20px;
+  display: flex; align-items: center; gap: 16px; justify-content: space-between;
+}
+.nav-logo { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--gold-light); font-size: 13px; }
+.nav-logo .dot { color: var(--text3); margin: 0 6px; }
+.nav-user { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text2); }
+.nav-user .email { font-family: 'JetBrains Mono', monospace; }
+.btn-logout {
+  padding: 6px 12px; border-radius: 8px; font-size: 12px;
+  background: var(--bg3); border: 1px solid var(--border); color: var(--text2);
+}
+.btn-logout:hover { color: var(--red); border-color: var(--red); }
+
+/* HERO */
+.hero {
+  padding: 64px 24px 48px; text-align: center; max-width: 880px; margin: 0 auto;
+}
+.hero-eyebrow {
+  display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--gold-light); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600;
+  background: rgba(217,119,6,0.10); border: 1px solid var(--border2);
+  padding: 6px 14px; border-radius: 999px; margin-bottom: 22px;
+}
+.hero h1 {
+  font-size: clamp(34px, 6vw, 56px); font-weight: 900; line-height: 1.05;
+  letter-spacing: -1.2px; margin-bottom: 20px;
+}
+.hero h1 .grad {
+  background: var(--grad-gold); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero p {
+  font-size: 17px; color: var(--text2); max-width: 600px; margin: 0 auto 28px;
+}
+.hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.btn-primary {
+  padding: 13px 22px; border-radius: 10px; font-weight: 700; font-size: 14px;
+  background: var(--gold); color: #0a0a0f;
+  transition: all .15s; text-decoration: none; display: inline-block;
+}
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+.btn-outline {
+  padding: 13px 22px; border-radius: 10px; font-weight: 600; font-size: 14px;
+  background: transparent; color: var(--text); border: 1px solid var(--border2);
+  transition: all .15s; text-decoration: none; display: inline-block;
+}
+.btn-outline:hover { background: var(--bg3); border-color: var(--gold); }
+
+/* SECTION */
+section { padding: 32px 24px; max-width: 1100px; margin: 0 auto; }
+.sec-head {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px; gap: 10px; flex-wrap: wrap;
+}
+.sec-title { font-size: 22px; font-weight: 700; letter-spacing: -.3px; }
+.sec-sub { color: var(--text2); font-size: 13px; }
+
+/* QUICKSTART */
+.quickstart { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 24px; }
+.qs-head {
+  display: flex; justify-content: space-between; align-items: center; cursor: pointer;
+}
+.qs-head h2 { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+.qs-head .chev { color: var(--text2); transition: transform .2s; }
+.quickstart[data-collapsed] .qs-head .chev { transform: rotate(-90deg); }
+.qs-body { margin-top: 22px; display: grid; gap: 14px; }
+.quickstart[data-collapsed] .qs-body { display: none; }
+.qs-step {
+  display: grid; grid-template-columns: 36px 1fr; gap: 14px; align-items: start;
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
+}
+.qs-step-num {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--gold-dark); color: var(--gold-bright);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; font-family: 'JetBrains Mono', monospace;
+}
+.qs-step-body h4 { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+.qs-step-body p { color: var(--text2); font-size: 13px; }
+.code-block {
+  position: relative; background: #0a0a0f; border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px 50px 10px 14px; margin-top: 8px;
+  font-family: 'JetBrains Mono', monospace; font-size: 12.5px; color: var(--gold-bright);
+  overflow-x: auto;
+}
+.code-block .copy {
+  position: absolute; top: 6px; right: 6px;
+  padding: 4px 10px; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 6px; font-size: 11px; color: var(--text2);
+}
+.code-block .copy:hover { color: var(--gold-light); border-color: var(--gold-dark); }
+
+/* BLOCKS */
+.blocks { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+@media (max-width: 760px) { .blocks { grid-template-columns: 1fr; } }
+.block {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+  padding: 22px; display: flex; flex-direction: column; gap: 12px;
+  transition: all .2s;
+}
+.block:hover { border-color: var(--border2); transform: translateY(-2px); }
+.block-head { display: flex; justify-content: space-between; align-items: center; }
+.block-name { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.block-count {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--gold-light);
+  background: rgba(217,119,6,0.10); padding: 3px 9px; border-radius: 999px;
+}
+.skill {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 10px;
+  padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;
+  gap: 12px; transition: all .15s;
+}
+.skill:hover { background: var(--bg4); border-color: var(--border2); }
+.skill-info { flex: 1; min-width: 0; }
+.skill-cmd { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--gold-light); font-weight: 500; margin-bottom: 2px; }
+.skill-desc { font-size: 12.5px; color: var(--text2); }
+.skill-btn {
+  padding: 6px 12px; background: transparent; border: 1px solid var(--border);
+  border-radius: 6px; font-size: 11px; color: var(--text2); white-space: nowrap;
+}
+.skill-btn:hover { color: var(--gold-light); border-color: var(--gold-dark); }
+
+/* DASHBOARDS */
+.dashes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+@media (max-width: 760px) { .dashes { grid-template-columns: 1fr; } }
+.dash {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+  padding: 22px; display: flex; flex-direction: column; gap: 12px;
+  position: relative; overflow: hidden;
+  transition: all .2s; text-decoration: none; color: inherit;
+}
+.dash::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(217,119,6,0.08), transparent 60%);
+  pointer-events: none;
+}
+.dash:hover { border-color: var(--gold-dark); transform: translateY(-2px); }
+.dash-name { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+.dash-desc { color: var(--text2); font-size: 13px; }
+.dash-link { color: var(--gold-light); font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+
+/* UPGRADE CARD */
+.upgrade {
+  background: var(--grad-gold); border-radius: 18px; padding: 32px;
+  display: grid; grid-template-columns: 1fr auto; gap: 20px; align-items: center;
+  color: #1a1a1a;
+}
+@media (max-width: 760px) { .upgrade { grid-template-columns: 1fr; text-align: center; } }
+.upgrade h3 { font-size: 22px; font-weight: 800; margin-bottom: 6px; color: #0a0a0f; }
+.upgrade p { color: rgba(10,10,15,0.78); font-size: 14px; }
+.btn-upgrade {
+  padding: 13px 22px; border-radius: 10px; font-weight: 700; font-size: 14px;
+  background: #0a0a0f; color: var(--gold-bright); text-decoration: none;
+  display: inline-block; white-space: nowrap;
+  transition: all .15s;
+}
+.btn-upgrade:hover { background: #1a1a1a; }
+
+/* FOOTER */
+footer {
+  margin-top: 60px; padding: 36px 24px;
+  border-top: 1px solid var(--border); background: var(--bg2);
+}
+.foot-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 720px) { .foot-grid { grid-template-columns: 1fr; } }
+.foot-col h4 { font-size: 12px; color: var(--text2); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 10px; }
+.foot-col a, .foot-col p { color: var(--text); font-size: 13px; display: block; margin: 4px 0; text-decoration: none; }
+.foot-col a:hover { color: var(--gold-light); }
+.optin { display: flex; gap: 8px; margin-top: 10px; }
+.optin input {
+  flex: 1; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+  padding: 9px 12px; font-size: 13px;
+}
+.optin input:focus { border-color: var(--gold); }
+.optin button {
+  padding: 9px 14px; background: var(--gold); color: #0a0a0f; font-weight: 600;
+  font-size: 12px; border-radius: 8px;
+}
+.optin button:hover { background: var(--gold-light); }
+.foot-bottom {
+  max-width: 1100px; margin: 24px auto 0; padding-top: 18px;
+  border-top: 1px solid var(--border); color: var(--text3); font-size: 12px;
+  text-align: center;
+}
+
+/* MODAL */
+.modal-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,.75); backdrop-filter: blur(6px);
+  display: none; align-items: center; justify-content: center; z-index: 1000;
+  padding: 24px;
+}
+.modal-bg[data-open] { display: flex; }
+.modal {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+  width: 100%; max-width: 600px; max-height: 90vh; overflow-y: auto;
+}
+.modal-head {
+  padding: 18px 22px; border-bottom: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.modal-head .cmd { font-family: 'JetBrains Mono', monospace; color: var(--gold-light); font-weight: 600; }
+.modal-close { background: none; color: var(--text3); font-size: 22px; padding: 4px 10px; }
+.modal-close:hover { color: var(--text); }
+.modal-body { padding: 22px; }
+.modal-body p { color: var(--text2); margin-bottom: 14px; }
+.modal-body h4 { font-size: 12px; color: var(--text2); text-transform: uppercase; letter-spacing: .8px; margin: 14px 0 6px; }
+.modal-example {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+  padding: 12px 14px; font-family: 'JetBrains Mono', monospace; font-size: 12.5px;
+  color: var(--gold-bright); margin-bottom: 8px;
+}
+.modal-output {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  padding: 12px 14px; font-size: 12.5px; color: var(--text2); white-space: pre-wrap;
+}
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--bg3); border: 1px solid var(--gold-dark); padding: 10px 18px;
+  border-radius: 8px; color: var(--text); font-size: 13px; opacity: 0; pointer-events: none;
+  transition: all .2s; z-index: 2000;
+}
+.toast[data-show] { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media (max-width: 600px) {
+  section { padding: 24px 16px; }
+  .hero { padding: 40px 16px 32px; }
+  .quickstart { padding: 18px; }
+  .upgrade { padding: 22px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-bg" id="login">
+  <form class="login-box" id="login-form" autocomplete="off">
+    <div class="login-logo">ZX LAB <span class="dot">·</span> Toolkit Agência IA</div>
+    <h1>Bem-vindo</h1>
+    <p>Entra com seu email pra liberar acesso aos materiais.</p>
+    <div class="login-field">
+      <label for="login-email">Email</label>
+      <input id="login-email" type="email" autocomplete="email" required placeholder="seu@email.com">
+    </div>
+    <div class="login-field">
+      <label for="login-pass">Senha</label>
+      <input id="login-pass" type="password" autocomplete="current-password" placeholder="qualquer senha funciona">
+    </div>
+    <button type="submit" class="login-btn">Entrar</button>
+    <div class="login-hint">Acesso aberto — qualquer email + senha entra.</div>
+  </form>
+</div>
+
+<!-- APP -->
+<div class="app" id="app" data-hidden>
+
+<nav class="nav">
+  <div class="nav-logo">ZX LAB <span class="dot">·</span> Toolkit Agência IA</div>
+  <div class="nav-user">
+    <span class="email" id="nav-email"></span>
+    <button class="btn-logout" id="btn-logout">Sair</button>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="hero-eyebrow">Toolkit Agência IA</div>
+  <h1>12 ferramentas pra você <span class="grad">entregar Agência IA</span> aos seus 3 primeiros clientes</h1>
+  <p>Skills do Claude Code + dashboards HTML standalone. Você instala em 15min e usa hoje mesmo com seu primeiro cliente.</p>
+  <div class="hero-cta">
+    <a href="#quickstart" class="btn-primary">▸ Instalar em 15min</a>
+    <a href="https://chat.whatsapp.com/PLACEHOLDER" target="_blank" rel="noopener" class="btn-outline">Entrar no grupo WhatsApp</a>
+  </div>
+</header>
+
+<section id="quickstart">
+  <div class="quickstart" id="qs">
+    <div class="qs-head" onclick="toggleQs()">
+      <h2>▸ Quickstart — instale em 15min</h2>
+      <span class="chev">▾</span>
+    </div>
+    <div class="qs-body">
+      <div class="qs-step">
+        <div class="qs-step-num">1</div>
+        <div class="qs-step-body">
+          <h4>Clone o repositório</h4>
+          <p>Pré-requisito: <span class="mono">git</span> instalado.</p>
+          <div class="code-block">
+            <span>git clone https://github.com/zxmarketingdigital/agencia-ia-toolkit</span>
+            <button class="copy" data-copy="git clone https://github.com/zxmarketingdigital/agencia-ia-toolkit">Copiar</button>
+          </div>
+        </div>
+      </div>
+      <div class="qs-step">
+        <div class="qs-step-num">2</div>
+        <div class="qs-step-body">
+          <h4>Rode o instalador</h4>
+          <p>Copia as 12 skills pra <span class="mono">~/.claude/skills/</span> e abre os 2 dashboards.</p>
+          <div class="code-block">
+            <span>cd agencia-ia-toolkit &amp;&amp; ./install.sh</span>
+            <button class="copy" data-copy="cd agencia-ia-toolkit && ./install.sh">Copiar</button>
+          </div>
+        </div>
+      </div>
+      <div class="qs-step">
+        <div class="qs-step-num">3</div>
+        <div class="qs-step-body">
+          <h4>Use a primeira skill</h4>
+          <p>Abra o Claude Code em qualquer pasta e digite o comando abaixo. Comece pelo diagnóstico do seu próximo cliente.</p>
+          <div class="code-block">
+            <span>/diagnostico-cliente</span>
+            <button class="copy" data-copy="/diagnostico-cliente">Copiar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2 class="sec-title">As 12 skills</h2>
+    <span class="sec-sub">4 blocos · do diagnóstico ao fechamento</span>
+  </div>
+  <div class="blocks" id="blocks"></div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <h2 class="sec-title">2 Dashboards HTML standalone</h2>
+    <span class="sec-sub">Roda no navegador, sem servidor</span>
+  </div>
+  <div class="dashes">
+    <a href="dashboards/vitrine-proposta.html" target="_blank" rel="noopener" class="dash">
+      <div class="dash-name">🎨 Vitrine de Proposta</div>
+      <div class="dash-desc">Cole o output de <span class="mono">/criar-orcamento</span> e gere uma proposta hi-fi pro cliente. Paleta personalizável, exporta PDF, gera link compartilhável.</div>
+      <div class="dash-link">dashboards/vitrine-proposta.html →</div>
+    </a>
+    <a href="dashboards/mini-pipeline.html" target="_blank" rel="noopener" class="dash">
+      <div class="dash-name">🗂️ Mini-Pipeline de Clientes</div>
+      <div class="dash-desc">Kanban dos seus clientes — do lead à entrega. Drag-and-drop, valores, próximas ações. localStorage, exporta JSON.</div>
+      <div class="dash-link">dashboards/mini-pipeline.html →</div>
+    </a>
+  </div>
+</section>
+
+<section>
+  <div class="upgrade">
+    <div>
+      <h3>Já entregou 3 clientes? Hora de escalar.</h3>
+      <p>O Toolkit te ajuda a entregar. <strong>ZX Control</strong> é o sistema completo de operação que usamos aqui no ZX LAB pra captar, qualificar, fechar e entregar em escala. Quando você sentir a dor de gerenciar 5+ contratos, é hora de fazer o upgrade.</p>
+    </div>
+    <a href="https://zxlab.com.br/mission-control" target="_blank" rel="noopener" class="btn-upgrade">Conhecer ZX Control →</a>
+  </div>
+</section>
+
+<footer>
+  <div class="foot-grid">
+    <div class="foot-col">
+      <h4>Comunidade</h4>
+      <a href="https://chat.whatsapp.com/PLACEHOLDER" target="_blank" rel="noopener">Grupo WhatsApp do Toolkit</a>
+      <a href="mailto:contato@zxlab.com.br">contato@zxlab.com.br</a>
+      <a href="https://zxlab.com.br" target="_blank" rel="noopener">zxlab.com.br</a>
+    </div>
+    <div class="foot-col">
+      <h4>Quer receber updates do toolkit?</h4>
+      <p style="color:var(--text2);font-size:12px;">A gente solta skill nova de vez em quando. Cola seu WhatsApp.</p>
+      <form class="optin" id="optin-form">
+        <input type="text" id="optin-phone" placeholder="+55 11 9..." autocomplete="off">
+        <button type="submit">Quero</button>
+      </form>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    Toolkit Agência IA · ZX LAB · feito com Claude Code
+  </div>
+</footer>
+
+</div><!-- /app -->
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <div class="modal-head">
+      <span class="cmd" id="modal-cmd"></span>
+      <button class="modal-close" id="modal-close" aria-label="Fechar">×</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SKILLS = {
+  diagnostico: {
+    name: '🔍 Diagnóstico do Cliente',
+    count: 3,
+    items: [
+      { cmd: '/diagnostico-cliente', desc: 'Levanta dor + oportunidades IA do cliente', longDesc: 'Conduz uma conversa estruturada onde você responde sobre o cliente (segmento, dor principal, recursos atuais, urgência) e o sistema gera um diagnóstico com 3 oportunidades IA priorizadas + sugestão de primeiro projeto.', output: 'Diagnóstico em markdown:\n- Perfil do negócio\n- 3 oportunidades IA priorizadas\n- Plano de ação 30 dias\n- Estimativa de impacto' },
+      { cmd: '/prototipar-sistema', desc: 'Brief + HTML hi-fi do sistema a entregar', longDesc: 'Gera brief estruturado de protótipo (problema → solução → stack → fluxos → entregáveis → cronograma) e invoca renderização HTML hi-fi pra você mostrar visualmente o que vai construir.', output: 'Markdown com brief técnico + HTML interativo do protótipo' },
+      { cmd: '/criar-orcamento', desc: 'Proposta comercial em MD + PDF', longDesc: 'Você informa cliente + escopo + valor, a skill gera proposta comercial completa (problema, solução, entregáveis, cronograma, investimento, próximos passos) pronta pra colar na Vitrine de Proposta.', output: 'Markdown estruturado + PDF formatado' }
+    ]
+  },
+  conteudo: {
+    name: '📱 Conteúdo pro Cliente',
+    count: 4,
+    items: [
+      { cmd: '/gerar-copy-post', desc: 'Copy de post Instagram/LinkedIn', longDesc: 'Cole o briefing (público, dor, oferta, tom) e a skill gera variantes de copy otimizadas pra engajamento — hook, corpo, CTA.', output: '3 variantes de copy com hook + corpo + CTA' },
+      { cmd: '/gerar-carrossel', desc: 'Carrossel 10 slides', longDesc: 'Gera carrossel completo de 10 slides com título, bullets e CTA por slide — pronto pra você passar pro designer ou usar template.', output: 'Slide 1 a 10 em markdown' },
+      { cmd: '/gerar-imagem', desc: 'Imagem com prompt otimizado', longDesc: 'Recebe descrição da cena e gera prompt detalhado otimizado pra ferramentas de geração (Midjourney, DALL-E, Leonardo). Inclui composição, iluminação, paleta.', output: 'Prompt otimizado + imagem gerada' },
+      { cmd: '/meta-creative-brief', desc: 'Briefing de criativo Meta Ads', longDesc: 'Gera briefing completo de criativo Meta Ads: 3 hooks de copy, 3 hooks visuais, CTA, ângulos psicológicos e specs técnicos por placement.', output: 'Brief em markdown pronto pra designer ou Sora/Midjourney' }
+    ]
+  },
+  demos: {
+    name: '🎬 Demos pra Vender',
+    count: 3,
+    items: [
+      { cmd: '/demo-qualificacao-bant', desc: 'Demo cinematográfico de agente qualificando lead', longDesc: 'Roda animação terminal cinematográfica de um agente IA qualificando lead via BANT — perfeito pra mostrar pro cliente final como o sistema funciona na prática.', output: 'Animação terminal interativa' },
+      { cmd: '/demo-configuracao-5-minutos', desc: 'Demo "instalei o agente em 5min"', longDesc: 'Demo cinematográfico do setup de agente WhatsApp em 5 minutos — exibe barras de progresso, QR code, status final. Use em vídeo de venda ou apresentação.', output: 'Animação terminal completa' },
+      { cmd: '/simulador-vendas', desc: 'Simulador de call de venda', longDesc: 'Você define o perfil do lead (segmento, objeção esperada) e a skill simula o lead em chat — você pratica abordagem e fechamento. Ao final, feedback estruturado.', output: 'Transcrição da call + análise + plano de melhoria' }
+    ]
+  },
+  analise: {
+    name: '📊 Análise + Arte',
+    count: 2,
+    items: [
+      { cmd: '/analise-call', desc: 'Análise de call de fechamento', longDesc: 'Cole o resumo da call de vendas (ou puxe direto do Zoom). A skill identifica objeções perdidas, gatilhos não usados e sugere script de follow-up.', output: 'Análise + script de follow-up sugerido' },
+      { cmd: '/criar-thumbnail', desc: 'Thumb pra vídeo entregável', longDesc: 'Gera prompt e direcionamento visual pra thumbnail de vídeo de alto CTR. Inclui composição, contraste, texto principal e copy de gancho.', output: 'Prompt da thumb + variações' }
+    ]
+  }
+};
+
+/* LOGIN */
+const loginEl = document.getElementById('login');
+const appEl = document.getElementById('app');
+const navEmail = document.getElementById('nav-email');
+
+function showApp(email) {
+  navEmail.textContent = email;
+  loginEl.dataset.hidden = '';
+  delete appEl.dataset.hidden;
+}
+function showLogin() {
+  delete loginEl.dataset.hidden;
+  appEl.dataset.hidden = '';
+}
+
+document.getElementById('login-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const email = document.getElementById('login-email').value.trim() || 'aluno@toolkit';
+  localStorage.setItem('toolkit_email', email);
+  showApp(email);
+});
+
+document.getElementById('btn-logout').addEventListener('click', () => {
+  localStorage.removeItem('toolkit_email');
+  showLogin();
+});
+
+/* INIT */
+(function init() {
+  const saved = localStorage.getItem('toolkit_email');
+  if (saved) showApp(saved);
+  renderBlocks();
+})();
+
+/* BLOCKS */
+function renderBlocks() {
+  const root = document.getElementById('blocks');
+  root.innerHTML = Object.entries(SKILLS).map(([key, b]) => `
+    <div class="block">
+      <div class="block-head">
+        <div class="block-name">${b.name}</div>
+        <div class="block-count">${b.count} skills</div>
+      </div>
+      ${b.items.map(s => `
+        <div class="skill">
+          <div class="skill-info">
+            <div class="skill-cmd">${s.cmd}</div>
+            <div class="skill-desc">${s.desc}</div>
+          </div>
+          <button class="skill-btn" data-skill="${s.cmd}">Ver detalhes</button>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+
+  root.querySelectorAll('[data-skill]').forEach(b => b.addEventListener('click', () => openSkill(b.dataset.skill)));
+}
+
+function openSkill(cmd) {
+  let item = null;
+  for (const k of Object.keys(SKILLS)) {
+    const found = SKILLS[k].items.find(x => x.cmd === cmd);
+    if (found) { item = found; break; }
+  }
+  if (!item) return;
+  document.getElementById('modal-cmd').textContent = item.cmd;
+  document.getElementById('modal-body').innerHTML = `
+    <p>${item.longDesc}</p>
+    <h4>Como usar</h4>
+    <div class="modal-example">${item.cmd}</div>
+    <h4>O que você recebe</h4>
+    <div class="modal-output">${item.output}</div>
+  `;
+  document.getElementById('modal-bg').dataset.open = '';
+}
+
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-bg').addEventListener('click', e => { if (e.target.id === 'modal-bg') closeModal(); });
+function closeModal() { delete document.getElementById('modal-bg').dataset.open; }
+
+/* COPY */
+document.addEventListener('click', async e => {
+  if (e.target.classList.contains('copy')) {
+    const text = e.target.dataset.copy;
+    try { await navigator.clipboard.writeText(text); toast('Copiado!'); }
+    catch { toast('Falha ao copiar — copie manualmente.'); }
+  }
+});
+
+/* QUICKSTART TOGGLE */
+function toggleQs() {
+  const qs = document.getElementById('qs');
+  if (qs.dataset.collapsed === undefined) qs.dataset.collapsed = '';
+  else delete qs.dataset.collapsed;
+}
+window.toggleQs = toggleQs;
+
+/* OPTIN */
+document.getElementById('optin-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const phone = document.getElementById('optin-phone').value.trim();
+  if (!phone) return;
+  const list = JSON.parse(localStorage.getItem('toolkit_optin') || '[]');
+  list.push({ phone, at: new Date().toISOString() });
+  localStorage.setItem('toolkit_optin', JSON.stringify(list));
+  document.getElementById('optin-phone').value = '';
+  toast('Pronto! Vamos te avisar.');
+});
+
+/* ESC */
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal();
+});
+
+/* TOAST */
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.dataset.show = '';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => delete t.dataset.show, 1800);
+}
+
+/* SMOOTH SCROLL */
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const id = a.getAttribute('href').slice(1);
+    const target = document.getElementById(id);
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+</script>
+
+</body>
+</html>

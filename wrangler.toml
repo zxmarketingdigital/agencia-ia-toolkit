@@ -1,0 +1,14 @@
+name = "toolkit-agencia-ia"
+account_id = "0174a9a58b2f9eb68614b4386710446a"
+compatibility_date = "2025-05-21"
+main = "worker.js"
+workers_dev = true
+
+routes = [
+  { pattern = "toolkit.zxlab.com.br", custom_domain = true }
+]
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
