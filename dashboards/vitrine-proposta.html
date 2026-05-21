@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZX LAB · Vitrine de Proposta</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #12121a;
+  --bg3: #16161f;
+  --bg4: #1c1c28;
+  --border: #1e1e2e;
+  --border2: rgba(217,119,6,0.25);
+  --text: #e8e8ed;
+  --text2: #8b8b9e;
+  --text3: #5a5a6e;
+  --gold: #D97706;
+  --gold-light: #F59E0B;
+  --gold-bright: #FCD34D;
+  --gold-dark: #92400e;
+  --red: #f43f5e;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, textarea { font-family: inherit; color: var(--text); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+.app { display: grid; grid-template-columns: 320px 1fr; min-height: 100vh; }
+
+/* SIDEBAR */
+aside {
+  background: var(--bg2); border-right: 1px solid var(--border);
+  padding: 18px; overflow-y: auto; max-height: 100vh; position: sticky; top: 0;
+}
+.logo {
+  font-family: 'JetBrains Mono', monospace; font-weight: 600;
+  color: var(--gold-light); font-size: 13px; margin-bottom: 22px;
+}
+.logo .dot { color: var(--text3); margin: 0 6px; }
+.section { margin-bottom: 22px; }
+.section h3 {
+  font-size: 11px; font-weight: 600; color: var(--text2);
+  text-transform: uppercase; letter-spacing: .8px; margin-bottom: 8px;
+}
+.field { margin-bottom: 10px; }
+.field label {
+  display: block; font-size: 11px; color: var(--text2); margin-bottom: 4px;
+}
+.field input, .field textarea {
+  width: 100%; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 7px; padding: 8px 10px; font-size: 13px;
+}
+.field input:focus, .field textarea:focus { border-color: var(--gold); }
+.field textarea {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  resize: vertical; min-height: 180px;
+}
+.swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 8px; }
+.sw {
+  height: 28px; border-radius: 6px; cursor: pointer; border: 2px solid transparent;
+  transition: all .15s;
+}
+.sw[data-active] { border-color: var(--text); }
+.hex-input { display: flex; gap: 6px; align-items: center; }
+.hex-input input { flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+.hex-input .preview { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border); }
+.btn {
+  width: 100%; padding: 9px 12px; border-radius: 8px; font-size: 13px;
+  font-weight: 500; border: 1px solid var(--border); background: var(--bg3);
+  color: var(--text); transition: all .15s; margin-bottom: 6px;
+}
+.btn:hover { background: var(--bg4); border-color: var(--border2); }
+.btn-primary {
+  background: var(--gold); border-color: var(--gold); color: #0a0a0f; font-weight: 600;
+}
+.btn-primary:hover { background: var(--gold-light); border-color: var(--gold-light); }
+.btn-danger:hover { color: var(--red); border-color: var(--red); }
+.logo-up {
+  display: flex; gap: 8px; align-items: center; padding: 6px;
+  background: var(--bg3); border: 1px dashed var(--border); border-radius: 7px;
+  font-size: 11px; color: var(--text2); cursor: pointer;
+}
+.logo-up:hover { border-color: var(--border2); }
+.logo-up img { max-height: 28px; max-width: 60px; border-radius: 4px; background: var(--bg); }
+
+/* PREVIEW (light vitrine) */
+main { overflow-y: auto; max-height: 100vh; }
+.preview-area { padding: 28px; min-height: 100%; }
+.hint {
+  background: var(--bg2); border: 1px dashed var(--border2); border-radius: 12px;
+  padding: 30px; text-align: center; color: var(--text2); font-size: 14px;
+}
+.hint b { color: var(--gold-light); }
+.hint button { background: var(--gold); color: #0a0a0f; padding: 8px 16px; border-radius: 8px; font-weight: 600; margin-top: 12px; }
+
+.vitrine {
+  background: #fdfdf7; color: #1a1a1a; border-radius: 14px;
+  padding: 50px 56px; max-width: 880px; margin: 0 auto;
+  box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+  --accent: #D97706;
+  --accent-light: #F59E0B;
+  --accent-dark: #92400e;
+  font-family: 'Inter', sans-serif; line-height: 1.6;
+}
+.vitrine .v-hero {
+  border-bottom: 3px solid var(--accent);
+  padding-bottom: 22px; margin-bottom: 28px;
+  display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap;
+}
+.vitrine .v-hero .who {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px;
+  color: var(--accent); text-transform: uppercase; letter-spacing: 1.2px; font-weight: 600;
+}
+.vitrine .v-hero h1 {
+  font-size: 32px; font-weight: 800; color: #1a1a1a; margin-top: 6px;
+  letter-spacing: -.5px; line-height: 1.15;
+}
+.vitrine .v-hero .agency {
+  font-size: 12px; color: #555; display: flex; align-items: center; gap: 8px;
+}
+.vitrine .v-hero .agency img { max-height: 36px; }
+.vitrine h1, .vitrine h2, .vitrine h3 { color: #111; font-weight: 700; }
+.vitrine h2 {
+  font-size: 22px; margin: 28px 0 12px;
+  padding-left: 10px; border-left: 4px solid var(--accent);
+}
+.vitrine h3 { font-size: 17px; margin: 20px 0 8px; color: var(--accent-dark); }
+.vitrine p { margin: 8px 0; color: #2a2a2a; }
+.vitrine ul, .vitrine ol { margin: 8px 0 12px 24px; }
+.vitrine li { margin: 4px 0; color: #2a2a2a; }
+.vitrine li::marker { color: var(--accent); }
+.vitrine a { color: var(--accent-dark); text-decoration: underline; }
+.vitrine code {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  background: #f0eddf; padding: 2px 6px; border-radius: 4px; color: #4a3500;
+}
+.vitrine pre {
+  background: #1a1a1a; color: #f0e0c0; padding: 14px 16px; border-radius: 8px;
+  overflow-x: auto; margin: 12px 0; font-size: 12px;
+}
+.vitrine pre code { background: transparent; padding: 0; color: inherit; }
+.vitrine strong { color: #111; font-weight: 700; }
+.vitrine em { color: #444; }
+.vitrine blockquote {
+  border-left: 3px solid var(--accent-light); padding-left: 14px;
+  margin: 12px 0; color: #555; font-style: italic;
+}
+.vitrine .v-cta {
+  margin-top: 36px; padding: 24px; text-align: center;
+  background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+  color: white; border-radius: 12px;
+}
+.vitrine .v-cta p { color: rgba(255,255,255,.9); margin-bottom: 12px; }
+.vitrine .v-cta a {
+  display: inline-block; background: white; color: var(--accent-dark);
+  padding: 10px 22px; border-radius: 8px; font-weight: 600; text-decoration: none;
+}
+.vitrine .v-foot {
+  margin-top: 28px; padding-top: 20px; border-top: 1px solid #ddd;
+  font-size: 11px; color: #888; text-align: center;
+}
+
+/* PRESENT MODE */
+.app[data-mode="present"] aside { display: none; }
+.app[data-mode="present"] { grid-template-columns: 1fr; }
+.app[data-mode="present"] main { max-height: none; }
+.app[data-mode="present"] .preview-area { padding: 40px 20px; }
+.float-back {
+  position: fixed; bottom: 20px; right: 20px; z-index: 100;
+  padding: 10px 16px; background: var(--bg3); border: 1px solid var(--gold-dark);
+  border-radius: 999px; color: var(--text); font-size: 12px; display: none;
+}
+.app[data-mode="present"] .float-back { display: block; }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--bg3); border: 1px solid var(--gold-dark); padding: 10px 18px;
+  border-radius: 8px; color: var(--text); font-size: 13px; opacity: 0; pointer-events: none;
+  transition: all .2s; z-index: 2000;
+}
+.toast[data-show] { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* MOBILE */
+.aside-toggle {
+  display: none; position: fixed; top: 12px; left: 12px; z-index: 50;
+  padding: 8px 12px; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: 8px; font-size: 12px;
+}
+@media (max-width: 820px) {
+  .app { grid-template-columns: 1fr; }
+  aside { position: fixed; inset: 0 auto 0 0; width: 80%; max-width: 320px;
+    transform: translateX(-100%); transition: transform .25s; z-index: 40; }
+  aside[data-open] { transform: translateX(0); }
+  .aside-toggle { display: block; }
+  .preview-area { padding: 60px 16px 28px; }
+  .vitrine { padding: 30px 22px; }
+}
+
+/* PRINT */
+@media print {
+  body { background: white; }
+  .app { display: block; }
+  aside, .float-back, .aside-toggle { display: none !important; }
+  main { max-height: none; overflow: visible; }
+  .preview-area { padding: 0; }
+  .vitrine { box-shadow: none; max-width: 100%; padding: 24px; border-radius: 0; }
+  .hint { display: none; }
+}
+
+.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<button class="aside-toggle" id="aside-toggle">☰ Editor</button>
+
+<div class="app" id="app" data-mode="edit">
+  <aside id="aside">
+    <div class="logo">ZX LAB <span class="dot">·</span> Vitrine de Proposta</div>
+
+    <div class="section">
+      <h3>Dados da Proposta</h3>
+      <div class="field"><label>Nome do cliente</label><input id="i-client" type="text" placeholder="ex: Padaria do João"></div>
+      <div class="field"><label>Nome da sua agência</label><input id="i-agency" type="text" placeholder="ex: ZX Studio"></div>
+      <div class="field">
+        <label>Logo da sua agência (opcional)</label>
+        <label class="logo-up">
+          <span id="logo-text">Clique pra fazer upload</span>
+          <img id="logo-img" class="hidden" alt="">
+          <input type="file" id="logo-file" accept="image/*" class="hidden">
+        </label>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Conteúdo (Markdown)</h3>
+      <div class="field">
+        <textarea id="i-md" placeholder="# Proposta — Sistema WhatsApp+Site
+
+Olá, segue nossa proposta detalhada...
+
+## O que você recebe
+- Site institucional
+- Agente WhatsApp 24h
+
+## Investimento
+R$ 2.800 à vista
+"></textarea>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Paleta da Vitrine</h3>
+      <div class="swatches" id="swatches">
+        <div class="sw" data-color="#D97706" style="background:#D97706" data-active title="Âmbar"></div>
+        <div class="sw" data-color="#3B82F6" style="background:#3B82F6" title="Azul"></div>
+        <div class="sw" data-color="#10B981" style="background:#10B981" title="Verde"></div>
+        <div class="sw" data-color="#8B5CF6" style="background:#8B5CF6" title="Roxo"></div>
+      </div>
+      <div class="hex-input">
+        <input id="i-hex" type="text" placeholder="#hex custom" value="#D97706">
+        <div class="preview" id="hex-preview" style="background:#D97706"></div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Ações</h3>
+      <button class="btn btn-primary" id="btn-render">Renderizar vitrine</button>
+      <button class="btn" id="btn-present">▶ Apresentar (fullscreen)</button>
+      <button class="btn" id="btn-pdf">Exportar PDF</button>
+      <button class="btn" id="btn-share">Compartilhar link</button>
+      <button class="btn" id="btn-example">Carregar exemplo</button>
+      <button class="btn btn-danger" id="btn-clear">Limpar</button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="preview-area" id="preview">
+      <div class="hint" id="hint">
+        👋 Cole o output da skill <b>/criar-orcamento</b> no campo Conteúdo (Markdown) ao lado, ou clique em "Carregar exemplo" pra ver uma proposta de demonstração.
+      </div>
+    </div>
+    <button class="float-back" id="btn-back">← Voltar ao editor</button>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY = 'vitrine_state';
+const EXAMPLE_MD = `# Proposta — Sistema WhatsApp + Site Institucional
+
+Olá! Foi um prazer conversar sobre o projeto da sua padaria. Segue nossa proposta detalhada com base no que conversamos.
+
+## O Desafio
+
+A **Padaria do João** atende cerca de 200 clientes por dia, mas ainda recebe pedidos por WhatsApp manualmente. Isso gera 2 problemas:
+- Funcionária do caixa atende WhatsApp e fila ao mesmo tempo
+- Pedidos se perdem nos horários de pico (12h–14h)
+
+## O que vamos entregar
+
+### 1. Site institucional
+- Página inicial com cardápio visual
+- Galeria de fotos dos produtos
+- Localização e horário de funcionamento
+- Botão direto pro WhatsApp da loja
+
+### 2. Agente IA no WhatsApp
+- Atende automaticamente 24h por dia
+- Responde dúvidas sobre cardápio, preços e horários
+- Coleta pedidos e envia direto pro WhatsApp da padaria
+- Aprende com o tempo conforme você corrige respostas
+
+## Cronograma
+
+| Etapa | Prazo |
+|-------|-------|
+| Aprovação da proposta | até dia 25 |
+| Coleta de fotos e cardápio | 3 dias |
+| Construção do site | 5 dias |
+| Setup do agente IA | 4 dias |
+| Treinamento e ajustes | 3 dias |
+| **Entrega final** | **15 dias úteis** |
+
+## Investimento
+
+**R$ 2.800** — pagamento em até 2x sem juros.
+
+> Inclui 30 dias de suporte pós-entrega para ajustes finos no agente IA.
+
+## Próximo passo
+
+Se faz sentido, é só responder esta proposta confirmando. Já reservo a semana pra começar.
+
+Qualquer dúvida, fala comigo direto no WhatsApp.`;
+
+function load() { try { return JSON.parse(localStorage.getItem(KEY)); } catch(e){ return null; } }
+function save(state) { localStorage.setItem(KEY, JSON.stringify(state)); }
+function esc(s) { return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* Hash-based share */
+function b64encode(o) { return btoa(unescape(encodeURIComponent(JSON.stringify(o)))); }
+function b64decode(s) { try { return JSON.parse(decodeURIComponent(escape(atob(s)))); } catch(e){ return null; } }
+
+/* Minimal Markdown parser (custom — fits /criar-orcamento output) */
+function md(src) {
+  if (!src) return '';
+  const lines = src.replace(/\r\n/g, '\n').split('\n');
+  let out = [];
+  let inCode = false, codeBuf = [];
+  let inList = false, listType = '';
+  let inTable = false, tableRows = [];
+
+  function flushList() {
+    if (inList) { out.push(`</${listType}>`); inList = false; listType = ''; }
+  }
+  function flushTable() {
+    if (!inTable) return;
+    if (tableRows.length >= 2) {
+      const header = tableRows[0];
+      const rows = tableRows.slice(2);
+      let t = '<table style="width:100%;border-collapse:collapse;margin:14px 0;font-size:13px;">';
+      t += '<thead><tr>' + header.map(h => `<th style="text-align:left;padding:8px 10px;border-bottom:2px solid var(--accent);color:#111;">${inlineMd(h)}</th>`).join('') + '</tr></thead>';
+      t += '<tbody>' + rows.map(r => '<tr>' + r.map(c => `<td style="padding:8px 10px;border-bottom:1px solid #eee;">${inlineMd(c)}</td>`).join('') + '</tr>').join('') + '</tbody></table>';
+      out.push(t);
+    }
+    inTable = false; tableRows = [];
+  }
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    // code block fence
+    if (/^```/.test(line)) {
+      if (inCode) {
+        out.push('<pre><code>' + esc(codeBuf.join('\n')) + '</code></pre>');
+        inCode = false; codeBuf = [];
+      } else {
+        flushList(); flushTable(); inCode = true;
+      }
+      continue;
+    }
+    if (inCode) { codeBuf.push(line); continue; }
+
+    // table row?
+    if (/^\s*\|.*\|\s*$/.test(line)) {
+      flushList();
+      inTable = true;
+      const cells = line.trim().replace(/^\||\|$/g,'').split('|').map(c => c.trim());
+      tableRows.push(cells);
+      continue;
+    } else if (inTable) {
+      flushTable();
+    }
+
+    // heading
+    let m;
+    if ((m = line.match(/^### (.+)/))) { flushList(); out.push('<h3>' + inlineMd(m[1]) + '</h3>'); continue; }
+    if ((m = line.match(/^## (.+)/))) { flushList(); out.push('<h2>' + inlineMd(m[1]) + '</h2>'); continue; }
+    if ((m = line.match(/^# (.+)/))) { flushList(); out.push('<h1 style="font-size:26px;margin:20px 0 10px;">' + inlineMd(m[1]) + '</h1>'); continue; }
+
+    // blockquote
+    if ((m = line.match(/^> (.+)/))) { flushList(); out.push('<blockquote>' + inlineMd(m[1]) + '</blockquote>'); continue; }
+
+    // ul
+    if ((m = line.match(/^[-*] (.+)/))) {
+      if (!inList || listType !== 'ul') { flushList(); out.push('<ul>'); inList = true; listType = 'ul'; }
+      out.push('<li>' + inlineMd(m[1]) + '</li>');
+      continue;
+    }
+    // ol
+    if ((m = line.match(/^\d+\. (.+)/))) {
+      if (!inList || listType !== 'ol') { flushList(); out.push('<ol>'); inList = true; listType = 'ol'; }
+      out.push('<li>' + inlineMd(m[1]) + '</li>');
+      continue;
+    }
+
+    // blank
+    if (/^\s*$/.test(line)) { flushList(); out.push(''); continue; }
+
+    // paragraph
+    flushList();
+    out.push('<p>' + inlineMd(line) + '</p>');
+  }
+  flushList(); flushTable();
+  if (inCode) out.push('<pre><code>' + esc(codeBuf.join('\n')) + '</code></pre>');
+  return out.join('\n');
+}
+function inlineMd(s) {
+  s = esc(s);
+  s = s.replace(/`([^`]+)`/g, '<code>$1</code>');
+  s = s.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+  s = s.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  s = s.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  return s;
+}
+
+function getState() {
+  return {
+    client: document.getElementById('i-client').value,
+    agency: document.getElementById('i-agency').value,
+    md: document.getElementById('i-md').value,
+    color: document.getElementById('i-hex').value || '#D97706',
+    logo: document.getElementById('logo-img').src && !document.getElementById('logo-img').classList.contains('hidden') ? document.getElementById('logo-img').src : ''
+  };
+}
+function setState(s) {
+  if (!s) return;
+  document.getElementById('i-client').value = s.client || '';
+  document.getElementById('i-agency').value = s.agency || '';
+  document.getElementById('i-md').value = s.md || '';
+  if (s.color) {
+    document.getElementById('i-hex').value = s.color;
+    document.getElementById('hex-preview').style.background = s.color;
+    document.querySelectorAll('.sw').forEach(sw => sw.dataset.color === s.color ? sw.dataset.active = '' : delete sw.dataset.active);
+  }
+  if (s.logo) {
+    const img = document.getElementById('logo-img');
+    img.src = s.logo; img.classList.remove('hidden');
+    document.getElementById('logo-text').textContent = 'Logo carregada ✓';
+  }
+}
+
+function darken(hex, pct) {
+  const c = hex.replace('#','');
+  const n = parseInt(c, 16);
+  let r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  r = Math.max(0, Math.floor(r * (1 - pct)));
+  g = Math.max(0, Math.floor(g * (1 - pct)));
+  b = Math.max(0, Math.floor(b * (1 - pct)));
+  return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6,'0');
+}
+function lighten(hex, pct) {
+  const c = hex.replace('#','');
+  const n = parseInt(c, 16);
+  let r = (n >> 16) & 255, g = (n >> 8) & 255, b = n & 255;
+  r = Math.min(255, Math.floor(r + (255-r) * pct));
+  g = Math.min(255, Math.floor(g + (255-g) * pct));
+  b = Math.min(255, Math.floor(b + (255-b) * pct));
+  return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6,'0');
+}
+
+function render() {
+  const s = getState();
+  save(s);
+  const target = document.getElementById('preview');
+
+  if (!s.md.trim() && !s.client && !s.agency) {
+    target.innerHTML = `<div class="hint">👋 Cole o output da skill <b>/criar-orcamento</b> no campo Conteúdo (Markdown) ao lado, ou clique em "Carregar exemplo" pra ver uma proposta de demonstração.</div>`;
+    return;
+  }
+  const accent = s.color || '#D97706';
+  const accentDark = darken(accent, 0.35);
+  const accentLight = lighten(accent, 0.2);
+
+  const html = `<article class="vitrine" style="--accent:${accent};--accent-light:${accentLight};--accent-dark:${accentDark};">
+    <div class="v-hero">
+      <div>
+        <div class="who">Proposta para</div>
+        <h1>${esc(s.client || 'Cliente')}</h1>
+      </div>
+      <div class="agency">
+        ${s.logo ? `<img src="${s.logo}" alt="logo">` : ''}
+        <span>${esc(s.agency || 'Sua Agência')}</span>
+      </div>
+    </div>
+    <div class="v-body">${md(s.md)}</div>
+    <div class="v-cta">
+      <p>Pronto pra começar? Responde essa proposta com um "topo!" e a gente já agenda o kickoff.</p>
+      <a href="mailto:agencia@example.com?subject=${encodeURIComponent('Proposta — aprovada')}">Quero seguir</a>
+    </div>
+    <div class="v-foot">Proposta gerada com ZX LAB · Toolkit Agência IA</div>
+  </article>`;
+  target.innerHTML = html;
+}
+
+/* Bind sidebar */
+['i-client','i-agency','i-md'].forEach(id => document.getElementById(id).addEventListener('input', render));
+document.getElementById('i-hex').addEventListener('input', e => {
+  const v = e.target.value;
+  if (/^#[0-9a-fA-F]{6}$/.test(v)) {
+    document.getElementById('hex-preview').style.background = v;
+    document.querySelectorAll('.sw').forEach(sw => delete sw.dataset.active);
+    render();
+  }
+});
+document.querySelectorAll('.sw').forEach(sw => {
+  sw.addEventListener('click', () => {
+    document.querySelectorAll('.sw').forEach(x => delete x.dataset.active);
+    sw.dataset.active = '';
+    const c = sw.dataset.color;
+    document.getElementById('i-hex').value = c;
+    document.getElementById('hex-preview').style.background = c;
+    render();
+  });
+});
+
+document.getElementById('logo-file').addEventListener('change', e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  const r = new FileReader();
+  r.onload = () => {
+    const img = document.getElementById('logo-img');
+    img.src = r.result; img.classList.remove('hidden');
+    document.getElementById('logo-text').textContent = 'Logo carregada ✓';
+    render();
+  };
+  r.readAsDataURL(f);
+});
+
+document.getElementById('btn-render').addEventListener('click', () => { render(); toast('Vitrine atualizada.'); });
+document.getElementById('btn-present').addEventListener('click', () => { document.getElementById('app').dataset.mode = 'present'; });
+document.getElementById('btn-back').addEventListener('click', () => { document.getElementById('app').dataset.mode = 'edit'; });
+document.getElementById('btn-pdf').addEventListener('click', () => { window.print(); });
+document.getElementById('btn-share').addEventListener('click', async () => {
+  const hash = b64encode(getState());
+  const url = `${location.origin}${location.pathname}#${hash}`;
+  try {
+    await navigator.clipboard.writeText(url);
+    toast('Link copiado pra área de transferência.');
+  } catch(e) {
+    prompt('Copie o link:', url);
+  }
+});
+document.getElementById('btn-example').addEventListener('click', () => {
+  setState({ client: 'Padaria do João', agency: 'ZX Studio', md: EXAMPLE_MD, color: '#D97706', logo: '' });
+  render(); toast('Exemplo carregado.');
+});
+document.getElementById('btn-clear').addEventListener('click', () => {
+  if (!confirm('Limpar todos os campos?')) return;
+  setState({ client: '', agency: '', md: '', color: '#D97706', logo: '' });
+  document.getElementById('logo-img').classList.add('hidden');
+  document.getElementById('logo-img').src = '';
+  document.getElementById('logo-text').textContent = 'Clique pra fazer upload';
+  render(); toast('Limpo.');
+});
+
+document.getElementById('aside-toggle').addEventListener('click', () => {
+  document.getElementById('aside').dataset.open = '';
+});
+document.addEventListener('click', e => {
+  if (window.innerWidth > 820) return;
+  const aside = document.getElementById('aside');
+  if (aside.dataset.open !== undefined && !aside.contains(e.target) && e.target.id !== 'aside-toggle') {
+    delete aside.dataset.open;
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && document.getElementById('app').dataset.mode === 'present') {
+    document.getElementById('app').dataset.mode = 'edit';
+  }
+});
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.dataset.show = '';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => delete t.dataset.show, 1800);
+}
+
+/* Init: hash > localStorage > empty */
+(function init() {
+  if (location.hash && location.hash.length > 2) {
+    const s = b64decode(location.hash.slice(1));
+    if (s) { setState(s); render(); return; }
+  }
+  const saved = load();
+  if (saved) setState(saved);
+  render();
+})();
+</script>
+
+</body>
+</html>

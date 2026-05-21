@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ZX LAB · Mini-Pipeline</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #12121a;
+  --bg3: #16161f;
+  --bg4: #1c1c28;
+  --border: #1e1e2e;
+  --border2: rgba(217,119,6,0.25);
+  --text: #e8e8ed;
+  --text2: #8b8b9e;
+  --text3: #5a5a6e;
+  --gold: #D97706;
+  --gold-light: #F59E0B;
+  --gold-bright: #FCD34D;
+  --gold-dark: #92400e;
+  --green: #10b981;
+  --red: #f43f5e;
+  --grad-gold: linear-gradient(135deg, #92400e, #D97706, #F59E0B, #FCD34D);
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.mono { font-family: 'JetBrains Mono', monospace; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+input, textarea, select { font-family: inherit; color: var(--text); }
+:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+/* HEADER */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: var(--bg2); border-bottom: 1px solid var(--border);
+  padding: 12px 20px;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+.logo { font-family: 'JetBrains Mono', monospace; font-weight: 600; color: var(--gold-light); font-size: 14px; }
+.logo .dot { color: var(--text3); margin: 0 6px; }
+.stats { color: var(--text2); font-size: 13px; flex: 1; min-width: 200px; }
+.stats b { color: var(--text); font-weight: 600; }
+.stats .sep { color: var(--text3); margin: 0 8px; }
+.actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn {
+  padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500;
+  border: 1px solid var(--border); background: var(--bg3); color: var(--text);
+  transition: all .15s ease;
+}
+.btn:hover { background: var(--bg4); border-color: var(--border2); }
+.btn-primary {
+  background: var(--gold); border-color: var(--gold);
+  color: #0a0a0f; font-weight: 600;
+}
+.btn-primary:hover { background: var(--gold-light); border-color: var(--gold-light); }
+.btn-danger:hover { color: var(--red); border-color: var(--red); }
+
+/* BOARD */
+main { padding: 20px; }
+.board {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(260px, 1fr));
+  gap: 14px;
+  min-height: calc(100vh - 80px);
+}
+.col {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 12px;
+  padding: 12px; display: flex; flex-direction: column; min-height: 200px;
+}
+.col-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--border);
+}
+.col-title { font-weight: 600; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.col-meta { font-size: 11px; color: var(--text2); }
+.col-cards { display: flex; flex-direction: column; gap: 8px; flex: 1; min-height: 100px; }
+.col[data-drop="active"] { background: var(--bg3); border-color: var(--gold-dark); }
+
+.col[data-col="lead"] .col-title { color: var(--text2); }
+.col[data-col="diagnostico"] .col-title { color: var(--gold-light); }
+.col[data-col="proposta"] .col-title { color: var(--gold); }
+.col[data-col="execucao"] .col-title { color: var(--gold-bright); }
+.col[data-col="entregue"] .col-title { color: var(--green); }
+
+/* CARDS */
+.card {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 10px;
+  padding: 10px 12px; cursor: grab; transition: all .15s ease;
+  position: relative;
+}
+.card:hover { border-color: var(--border2); transform: translateY(-1px); }
+.card.dragging { opacity: .4; }
+.card-name { font-weight: 600; font-size: 13px; margin-bottom: 6px; padding-right: 26px; }
+.card-tags { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 6px; }
+.tag {
+  font-size: 10px; padding: 2px 6px; border-radius: 4px;
+  background: var(--bg4); color: var(--text2); border: 1px solid var(--border);
+}
+.card-value { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--gold-light); font-weight: 600; }
+.card-meta { display: flex; justify-content: space-between; align-items: center; margin-top: 6px; font-size: 11px; color: var(--text3); }
+.card-action { font-size: 11px; color: var(--text2); margin-top: 4px; font-style: italic; }
+.card-action.empty { color: var(--text3); }
+.card-menu {
+  position: absolute; top: 8px; right: 8px;
+  width: 22px; height: 22px; border-radius: 4px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--text3); font-size: 16px; line-height: 1;
+}
+.card-menu:hover { background: var(--bg4); color: var(--text); }
+
+/* MODAL */
+.modal-bg {
+  position: fixed; inset: 0; background: rgba(0,0,0,.7); backdrop-filter: blur(4px);
+  display: none; align-items: center; justify-content: center; z-index: 1000;
+  padding: 20px;
+}
+.modal-bg[data-open] { display: flex; }
+.modal {
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 14px;
+  width: 100%; max-width: 560px; max-height: 90vh; overflow-y: auto;
+}
+.modal-head { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.modal-head h2 { font-size: 16px; font-weight: 600; }
+.modal-close { color: var(--text3); font-size: 20px; padding: 4px 8px; }
+.modal-close:hover { color: var(--text); }
+.modal-body { padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 4px; }
+.field label { font-size: 11px; color: var(--text2); text-transform: uppercase; letter-spacing: .5px; font-weight: 600; }
+.field input, .field select, .field textarea {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
+  padding: 9px 12px; font-size: 13px;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color: var(--gold); }
+.field textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.history {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+  padding: 10px; font-size: 11px; color: var(--text2); max-height: 100px; overflow-y: auto;
+  font-family: 'JetBrains Mono', monospace;
+}
+.history-item { padding: 2px 0; }
+.modal-foot { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; justify-content: space-between; gap: 8px; }
+.modal-foot .right { display: flex; gap: 8px; }
+
+/* ARCHIVE SIDEBAR */
+.archive {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 320px;
+  background: var(--bg2); border-left: 1px solid var(--border);
+  transform: translateX(100%); transition: transform .25s ease;
+  z-index: 200; display: flex; flex-direction: column;
+}
+.archive[data-open] { transform: translateX(0); }
+.archive-head { padding: 14px 18px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+.archive-head h3 { font-size: 14px; font-weight: 600; }
+.archive-body { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; }
+.archive-toggle {
+  position: fixed; bottom: 20px; right: 20px; z-index: 150;
+  padding: 10px 14px; background: var(--bg3); border: 1px solid var(--border); border-radius: 999px;
+  font-size: 12px; color: var(--text2);
+}
+.archive-toggle:hover { color: var(--text); border-color: var(--border2); }
+
+/* TOAST */
+.toast {
+  position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--bg3); border: 1px solid var(--gold-dark); padding: 10px 18px;
+  border-radius: 8px; color: var(--text); font-size: 13px; opacity: 0; pointer-events: none;
+  transition: all .2s ease; z-index: 2000;
+}
+.toast[data-show] { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* MOBILE */
+.mobile-tabs { display: none; gap: 6px; padding: 0 20px 12px; overflow-x: auto; }
+.mobile-tabs button {
+  padding: 6px 12px; border-radius: 6px; font-size: 12px;
+  background: var(--bg3); border: 1px solid var(--border); white-space: nowrap;
+}
+.mobile-tabs button.active { background: var(--gold-dark); border-color: var(--gold); color: var(--gold-bright); }
+
+@media (max-width: 900px) {
+  .board { grid-template-columns: 1fr; }
+  .col { display: none; }
+  .col.active { display: flex; }
+  .mobile-tabs { display: flex; }
+  .stats { flex-basis: 100%; order: 3; }
+}
+
+/* HIDDEN FILE INPUT */
+.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">ZX LAB <span class="dot">·</span> Mini-Pipeline</div>
+  <div class="stats" id="stats">— clientes · R$ — em pipeline · R$ — fechados</div>
+  <div class="actions">
+    <button class="btn" id="btn-export" aria-label="Exportar dados em JSON">Exportar JSON</button>
+    <button class="btn" id="btn-import" aria-label="Importar dados de JSON">Importar JSON</button>
+    <button class="btn btn-danger" id="btn-clear" aria-label="Limpar todos os clientes">Limpar tudo</button>
+    <button class="btn btn-primary" id="btn-new">+ Novo Cliente</button>
+  </div>
+</header>
+
+<div class="mobile-tabs" id="mobile-tabs"></div>
+
+<main>
+  <div class="board" id="board">
+    <div class="col" data-col="lead">
+      <div class="col-head"><div class="col-title">🎯 Lead</div><div class="col-meta" data-meta="lead">0 · R$ 0</div></div>
+      <div class="col-cards" data-cards="lead"></div>
+    </div>
+    <div class="col" data-col="diagnostico">
+      <div class="col-head"><div class="col-title">🔍 Diagnóstico</div><div class="col-meta" data-meta="diagnostico">0 · R$ 0</div></div>
+      <div class="col-cards" data-cards="diagnostico"></div>
+    </div>
+    <div class="col" data-col="proposta">
+      <div class="col-head"><div class="col-title">📋 Proposta enviada</div><div class="col-meta" data-meta="proposta">0 · R$ 0</div></div>
+      <div class="col-cards" data-cards="proposta"></div>
+    </div>
+    <div class="col" data-col="execucao">
+      <div class="col-head"><div class="col-title">🚀 Em execução</div><div class="col-meta" data-meta="execucao">0 · R$ 0</div></div>
+      <div class="col-cards" data-cards="execucao"></div>
+    </div>
+    <div class="col" data-col="entregue">
+      <div class="col-head"><div class="col-title">✅ Entregue</div><div class="col-meta" data-meta="entregue">0 · R$ 0</div></div>
+      <div class="col-cards" data-cards="entregue"></div>
+    </div>
+  </div>
+</main>
+
+<button class="archive-toggle" id="archive-toggle">📦 Arquivados (<span id="arch-count">0</span>)</button>
+
+<aside class="archive" id="archive">
+  <div class="archive-head">
+    <h3>Clientes Arquivados</h3>
+    <button class="modal-close" id="archive-close">×</button>
+  </div>
+  <div class="archive-body" id="archive-body">
+    <div style="color:var(--text3);font-size:12px;text-align:center;padding:20px;">Nenhum cliente arquivado.</div>
+  </div>
+</aside>
+
+<div class="modal-bg" id="modal-bg">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="modal-title">Novo Cliente</h2>
+      <button class="modal-close" id="modal-close">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="field"><label>Nome do cliente *</label><input id="f-name" type="text" required></div>
+      <div class="field-row">
+        <div class="field"><label>WhatsApp</label><input id="f-phone" type="tel" placeholder="+55..."></div>
+        <div class="field"><label>Email</label><input id="f-email" type="email"></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Valor (R$)</label><input id="f-value" type="number" step="0.01" min="0" placeholder="0"></div>
+        <div class="field"><label>Coluna</label>
+          <select id="f-col">
+            <option value="lead">🎯 Lead</option>
+            <option value="diagnostico">🔍 Diagnóstico</option>
+            <option value="proposta">📋 Proposta enviada</option>
+            <option value="execucao">🚀 Em execução</option>
+            <option value="entregue">✅ Entregue</option>
+          </select>
+        </div>
+      </div>
+      <div class="field"><label>Tags (separadas por vírgula)</label><input id="f-tags" type="text" placeholder="ex: agência IA, whatsapp"></div>
+      <div class="field-row">
+        <div class="field"><label>Próxima ação</label><input id="f-action" type="text" placeholder="ex: enviar proposta"></div>
+        <div class="field"><label>Data da ação</label><input id="f-date" type="date"></div>
+      </div>
+      <div class="field"><label>Notas</label><textarea id="f-notes" rows="3"></textarea></div>
+      <div class="field"><label>Histórico</label><div class="history" id="f-history"></div></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-danger" id="btn-delete">Deletar</button>
+      <div class="right">
+        <button class="btn" id="btn-archive">Arquivar</button>
+        <button class="btn btn-primary" id="btn-save">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<input type="file" id="file-import" accept="application/json" class="hidden">
+
+<script>
+const COLS = ['lead','diagnostico','proposta','execucao','entregue'];
+const COL_NAMES = {
+  lead: '🎯 Lead', diagnostico: '🔍 Diagnóstico', proposta: '📋 Proposta enviada',
+  execucao: '🚀 Em execução', entregue: '✅ Entregue'
+};
+
+const KEY = 'pipeline_clients';
+const KEY_ARCH = 'pipeline_archived';
+
+let clients = load(KEY) || seed();
+let archived = load(KEY_ARCH) || [];
+let editingId = null;
+
+function load(k) { try { return JSON.parse(localStorage.getItem(k)); } catch(e){ return null; } }
+function save() { localStorage.setItem(KEY, JSON.stringify(clients)); localStorage.setItem(KEY_ARCH, JSON.stringify(archived)); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function fmt(v) { return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',minimumFractionDigits:0,maximumFractionDigits:0}).format(v||0); }
+function now() { return new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}); }
+function escapeHtml(s) { return (s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function seed() {
+  return [
+    { id: uid(), name: 'Padaria do João', col: 'diagnostico', value: 1500, tags: ['varejo','whatsapp'], action: 'enviar diagnóstico', actionDate: '', phone: '', email: '', notes: 'Cliente quer agente WhatsApp pro atendimento.', history: [{ at: now(), text: 'Cliente criado em Diagnóstico' }], created: now() },
+    { id: uid(), name: 'Salão Beleza Pura', col: 'proposta', value: 2800, tags: ['estética'], action: 'follow-up proposta', actionDate: '', phone: '', email: '', notes: '', history: [{ at: now(), text: 'Proposta enviada' }], created: now() },
+    { id: uid(), name: 'Clínica Sorrir', col: 'execucao', value: 4200, tags: ['saúde','agenda'], action: 'integrar Google Calendar', actionDate: '', phone: '', email: '', notes: '', history: [{ at: now(), text: 'Contrato fechado' }], created: now() }
+  ];
+}
+
+function render() {
+  COLS.forEach(c => {
+    const cards = document.querySelector(`[data-cards="${c}"]`);
+    const meta = document.querySelector(`[data-meta="${c}"]`);
+    const items = clients.filter(x => x.col === c);
+    const sum = items.reduce((a,b) => a + Number(b.value||0), 0);
+    meta.textContent = `${items.length} · ${fmt(sum)}`;
+    cards.innerHTML = items.map(cardHtml).join('') || `<div style="color:var(--text3);font-size:11px;text-align:center;padding:14px;">Sem clientes</div>`;
+  });
+  const total = clients.length;
+  const pipeVal = clients.filter(c => c.col !== 'entregue').reduce((a,b) => a + Number(b.value||0), 0);
+  const doneVal = clients.filter(c => c.col === 'entregue').reduce((a,b) => a + Number(b.value||0), 0);
+  document.getElementById('stats').innerHTML = `<b>${total}</b> clientes <span class="sep">·</span> <b>${fmt(pipeVal)}</b> em pipeline <span class="sep">·</span> <b>${fmt(doneVal)}</b> fechados`;
+  document.getElementById('arch-count').textContent = archived.length;
+  bindCards();
+  renderArchive();
+}
+
+function cardHtml(c) {
+  const tags = (c.tags||[]).slice(0,3).map(t => `<span class="tag">${escapeHtml(t)}</span>`).join('');
+  const action = c.action ? `<div class="card-action">→ ${escapeHtml(c.action)}</div>` : `<div class="card-action empty">sem próxima ação</div>`;
+  return `<div class="card" draggable="true" data-id="${c.id}">
+    <button class="card-menu" data-edit="${c.id}" aria-label="Editar cliente">⋯</button>
+    <div class="card-name">${escapeHtml(c.name)}</div>
+    ${tags ? `<div class="card-tags">${tags}</div>` : ''}
+    <div class="card-value">${fmt(c.value)}</div>
+    ${action}
+    <div class="card-meta"><span>${escapeHtml(c.created||'')}</span></div>
+  </div>`;
+}
+
+function renderArchive() {
+  const body = document.getElementById('archive-body');
+  if (!archived.length) {
+    body.innerHTML = `<div style="color:var(--text3);font-size:12px;text-align:center;padding:20px;">Nenhum cliente arquivado.</div>`;
+    return;
+  }
+  body.innerHTML = archived.map(c => `
+    <div class="card" style="cursor:default;">
+      <div class="card-name">${escapeHtml(c.name)}</div>
+      <div class="card-value">${fmt(c.value)}</div>
+      <div class="card-meta"><span>${COL_NAMES[c.col]||c.col}</span><button class="btn" style="padding:4px 10px;font-size:11px;" data-reactivate="${c.id}">Reativar</button></div>
+    </div>
+  `).join('');
+  body.querySelectorAll('[data-reactivate]').forEach(b => b.addEventListener('click', () => {
+    const id = b.dataset.reactivate;
+    const idx = archived.findIndex(c => c.id === id);
+    if (idx === -1) return;
+    const c = archived.splice(idx, 1)[0];
+    c.history = c.history || [];
+    c.history.push({ at: now(), text: 'Reativado do arquivo' });
+    clients.push(c);
+    save(); render();
+    toast('Cliente reativado.');
+  }));
+}
+
+function bindCards() {
+  document.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('dragstart', e => {
+      card.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', card.dataset.id);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', () => card.classList.remove('dragging'));
+  });
+  document.querySelectorAll('[data-edit]').forEach(b => b.addEventListener('click', e => {
+    e.stopPropagation();
+    openEdit(b.dataset.edit);
+  }));
+}
+
+document.querySelectorAll('.col').forEach(col => {
+  col.addEventListener('dragover', e => { e.preventDefault(); col.dataset.drop = 'active'; });
+  col.addEventListener('dragleave', () => { delete col.dataset.drop; });
+  col.addEventListener('drop', e => {
+    e.preventDefault();
+    delete col.dataset.drop;
+    const id = e.dataTransfer.getData('text/plain');
+    const target = col.dataset.col;
+    const c = clients.find(x => x.id === id);
+    if (!c || c.col === target) return;
+    const from = c.col;
+    c.col = target;
+    c.history = c.history || [];
+    c.history.push({ at: now(), text: `Movido de ${COL_NAMES[from]} → ${COL_NAMES[target]}` });
+    save(); render();
+  });
+});
+
+function openEdit(id) {
+  editingId = id;
+  const c = id ? clients.find(x => x.id === id) : null;
+  document.getElementById('modal-title').textContent = c ? 'Editar Cliente' : 'Novo Cliente';
+  document.getElementById('f-name').value = c?.name || '';
+  document.getElementById('f-phone').value = c?.phone || '';
+  document.getElementById('f-email').value = c?.email || '';
+  document.getElementById('f-value').value = c?.value || '';
+  document.getElementById('f-col').value = c?.col || 'lead';
+  document.getElementById('f-tags').value = (c?.tags || []).join(', ');
+  document.getElementById('f-action').value = c?.action || '';
+  document.getElementById('f-date').value = c?.actionDate || '';
+  document.getElementById('f-notes').value = c?.notes || '';
+  const hist = document.getElementById('f-history');
+  hist.innerHTML = (c?.history || []).map(h => `<div class="history-item"><span style="color:var(--text3);">${h.at}</span> · ${escapeHtml(h.text)}</div>`).join('') || `<div class="history-item" style="color:var(--text3);">Sem histórico ainda.</div>`;
+  document.getElementById('btn-delete').style.visibility = c ? 'visible' : 'hidden';
+  document.getElementById('btn-archive').style.visibility = c ? 'visible' : 'hidden';
+  document.getElementById('modal-bg').dataset.open = '';
+}
+
+function closeModal() {
+  delete document.getElementById('modal-bg').dataset.open;
+  editingId = null;
+}
+
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-bg').addEventListener('click', e => { if (e.target.id === 'modal-bg') closeModal(); });
+
+document.getElementById('btn-save').addEventListener('click', () => {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { toast('Nome é obrigatório'); return; }
+  const data = {
+    name,
+    phone: document.getElementById('f-phone').value.trim(),
+    email: document.getElementById('f-email').value.trim(),
+    value: Number(document.getElementById('f-value').value || 0),
+    col: document.getElementById('f-col').value,
+    tags: document.getElementById('f-tags').value.split(',').map(s => s.trim()).filter(Boolean),
+    action: document.getElementById('f-action').value.trim(),
+    actionDate: document.getElementById('f-date').value,
+    notes: document.getElementById('f-notes').value.trim()
+  };
+  if (editingId) {
+    const c = clients.find(x => x.id === editingId);
+    const colChanged = c.col !== data.col;
+    Object.assign(c, data);
+    c.history = c.history || [];
+    if (colChanged) c.history.push({ at: now(), text: `Coluna alterada para ${COL_NAMES[data.col]}` });
+    c.history.push({ at: now(), text: 'Dados atualizados' });
+    toast('Cliente atualizado.');
+  } else {
+    clients.push({ id: uid(), ...data, created: now(), history: [{ at: now(), text: `Cliente criado em ${COL_NAMES[data.col]}` }] });
+    toast('Cliente criado.');
+  }
+  save(); render(); closeModal();
+});
+
+document.getElementById('btn-delete').addEventListener('click', () => {
+  if (!editingId) return;
+  if (!confirm('Deletar este cliente? Essa ação não pode ser desfeita.')) return;
+  clients = clients.filter(x => x.id !== editingId);
+  save(); render(); closeModal();
+  toast('Cliente deletado.');
+});
+
+document.getElementById('btn-archive').addEventListener('click', () => {
+  if (!editingId) return;
+  const idx = clients.findIndex(x => x.id === editingId);
+  if (idx === -1) return;
+  const c = clients.splice(idx, 1)[0];
+  c.history = c.history || [];
+  c.history.push({ at: now(), text: 'Arquivado' });
+  archived.push(c);
+  save(); render(); closeModal();
+  toast('Cliente arquivado.');
+});
+
+document.getElementById('btn-new').addEventListener('click', () => openEdit(null));
+
+document.getElementById('btn-export').addEventListener('click', () => {
+  const blob = new Blob([JSON.stringify({ clients, archived, exportedAt: new Date().toISOString() }, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `pipeline-${new Date().toISOString().slice(0,10)}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  toast('JSON exportado.');
+});
+
+document.getElementById('btn-import').addEventListener('click', () => document.getElementById('file-import').click());
+
+document.getElementById('file-import').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  try {
+    const data = JSON.parse(await file.text());
+    if (!Array.isArray(data.clients)) { toast('JSON inválido.'); return; }
+    const overwrite = confirm('Sobrescrever dados atuais? Cancele pra mesclar.');
+    if (overwrite) {
+      clients = data.clients;
+      archived = data.archived || [];
+    } else {
+      clients = clients.concat(data.clients);
+      archived = archived.concat(data.archived || []);
+    }
+    save(); render();
+    toast('Importação concluída.');
+  } catch(err) { toast('Falha ao ler JSON.'); }
+  e.target.value = '';
+});
+
+document.getElementById('btn-clear').addEventListener('click', () => {
+  if (!confirm('Apagar TODOS os clientes (e arquivados)? Essa ação não pode ser desfeita.')) return;
+  clients = []; archived = [];
+  save(); render();
+  toast('Tudo limpo.');
+});
+
+document.getElementById('archive-toggle').addEventListener('click', () => {
+  document.getElementById('archive').dataset.open = '';
+});
+document.getElementById('archive-close').addEventListener('click', () => {
+  delete document.getElementById('archive').dataset.open;
+});
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.dataset.show = '';
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => delete t.dataset.show, 1800);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    closeModal();
+    delete document.getElementById('archive').dataset.open;
+  }
+});
+
+/* MOBILE TABS */
+(function mobile() {
+  const tabs = document.getElementById('mobile-tabs');
+  COLS.forEach((c,i) => {
+    const b = document.createElement('button');
+    b.textContent = COL_NAMES[c];
+    b.dataset.col = c;
+    if (i === 0) b.classList.add('active');
+    b.addEventListener('click', () => {
+      tabs.querySelectorAll('button').forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      document.querySelectorAll('.col').forEach(col => col.classList.toggle('active', col.dataset.col === c));
+    });
+    tabs.appendChild(b);
+  });
+  document.querySelector('.col[data-col="lead"]').classList.add('active');
+})();
+
+render();
+</script>
+
+</body>
+</html>
