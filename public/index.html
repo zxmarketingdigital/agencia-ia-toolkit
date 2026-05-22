@@ -207,12 +207,44 @@ section { padding: 32px 24px; max-width: 1100px; margin: 0 auto; }
 }
 .skill-btn:hover { color: var(--gold-light); border-color: var(--gold-dark); }
 
+/* VIDEO */
+.video-wrap {
+  position: relative; padding-top: 56.25%;
+  background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
+  overflow: hidden;
+}
+.video-wrap iframe {
+  position: absolute; inset: 0; width: 100%; height: 100%; border: 0;
+}
+.video-wrap iframe[data-broken] { display: none; }
+.video-fallback {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; text-align: center;
+  background: var(--bg2); color: var(--text2); padding: 20px;
+}
+.video-fallback[data-hidden] { display: none; }
+.video-fallback p { margin: 0; }
+
 /* DASHBOARDS */
+.dashes-note {
+  background: rgba(217,119,6,0.08); border: 1px solid var(--border2);
+  border-radius: 12px; padding: 14px 16px; margin-bottom: 16px;
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.dashes-note .icon { font-size: 18px; line-height: 1.3; }
+.dashes-note .body { font-size: 13px; color: var(--text); line-height: 1.55; }
+.dashes-note .body b { color: var(--gold-bright); font-weight: 600; }
+.dashes-note .body code {
+  font-family: 'JetBrains Mono', monospace; font-size: 12px;
+  background: var(--bg); padding: 1px 6px; border-radius: 4px;
+  color: var(--gold-light); border: 1px solid var(--border);
+}
+.dashes-note a { color: var(--gold-light); text-decoration: underline; text-underline-offset: 2px; }
 .dashes { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
 @media (max-width: 760px) { .dashes { grid-template-columns: 1fr; } }
 .dash {
   background: var(--bg2); border: 1px solid var(--border); border-radius: 16px;
-  padding: 22px; display: flex; flex-direction: column; gap: 12px;
+  padding: 22px; display: flex; flex-direction: column; gap: 10px;
   position: relative; overflow: hidden;
   transition: all .2s; text-decoration: none; color: inherit;
 }
@@ -225,6 +257,13 @@ section { padding: 32px 24px; max-width: 1100px; margin: 0 auto; }
 .dash-name { font-size: 17px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
 .dash-desc { color: var(--text2); font-size: 13px; }
 .dash-link { color: var(--gold-light); font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+.dash-tag {
+  display: inline-block; font-size: 10.5px; font-weight: 600;
+  background: rgba(217,119,6,0.15); color: var(--gold-bright);
+  border: 1px solid var(--border2); padding: 2px 8px; border-radius: 999px;
+  font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: .5px;
+  align-self: flex-start;
+}
 
 /* UPGRADE CARD */
 .upgrade {
@@ -329,8 +368,32 @@ section { padding: 32px 24px; max-width: 1100px; margin: 0 auto; }
   <p>Skills do Claude Code + dashboards HTML standalone. Você instala em 15min e usa hoje mesmo com seu primeiro cliente.</p>
   <div class="hero-cta">
     <a href="#quickstart" class="btn-primary">▸ Instalar em 15min</a>
+    <a href="#video" class="btn-outline">▶ Assistir o tour</a>
   </div>
 </header>
+
+<section id="video">
+  <div class="sec-head">
+    <h2 class="sec-title">▶ Tour do Toolkit</h2>
+    <span class="sec-sub">Apresentação completa · ~15min</span>
+  </div>
+  <div class="video-wrap">
+    <iframe
+      id="tour-video"
+      src="ZOOM_RECORDING_URL_AQUI"
+      title="Tour do Toolkit Agência IA"
+      frameborder="0"
+      allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+      allowfullscreen
+      referrerpolicy="strict-origin-when-cross-origin"
+      loading="lazy">
+    </iframe>
+    <div class="video-fallback" id="video-fallback">
+      <p>📹 Vídeo do tour em breve aqui.</p>
+      <p style="color:var(--text3);font-size:12px;margin-top:6px;">Enquanto isso, comece pelo Quickstart abaixo.</p>
+    </div>
+  </div>
+</section>
 
 <section id="quickstart">
   <div class="quickstart" id="qs">
@@ -389,13 +452,30 @@ section { padding: 32px 24px; max-width: 1100px; margin: 0 auto; }
     <h2 class="sec-title">2 Dashboards HTML standalone</h2>
     <span class="sec-sub">Roda no navegador, sem servidor</span>
   </div>
+
+  <div class="dashes-note">
+    <div class="icon">💡</div>
+    <div class="body">
+      <b>Use os dashboards localmente, não aqui.</b> Os dois links abaixo abrem versões de <b>teste</b> aqui dentro da área de membros — pra você ver como funciona. Quando for usar com cliente real, rode o <code>./install.sh</code> (do Quickstart acima) e abra os HTMLs do seu próprio computador. Os dados ficam no <code>localStorage</code> do seu navegador — então hospedar local garante privacidade e que ninguém perde o que você criou.
+      <br><br>
+      O instalador já abre os dois no seu browser. Caminho local depois do clone:
+      <br>
+      <code>~/projetos/agencia-ia-toolkit/dashboards/vitrine-proposta.html</code><br>
+      <code>~/projetos/agencia-ia-toolkit/dashboards/mini-pipeline.html</code>
+      <br><br>
+      Repo: <a href="https://github.com/zxmarketingdigital/agencia-ia-toolkit" target="_blank" rel="noopener">github.com/zxmarketingdigital/agencia-ia-toolkit</a>
+    </div>
+  </div>
+
   <div class="dashes">
     <a href="dashboards/vitrine-proposta.html" target="_blank" rel="noopener" class="dash">
+      <span class="dash-tag">Demo · use localmente</span>
       <div class="dash-name">🎨 Vitrine de Proposta</div>
       <div class="dash-desc">Cole o output de <span class="mono">/criar-orcamento</span> e gere uma proposta hi-fi pro cliente. Paleta personalizável, exporta PDF, gera link compartilhável.</div>
       <div class="dash-link">dashboards/vitrine-proposta.html →</div>
     </a>
     <a href="dashboards/mini-pipeline.html" target="_blank" rel="noopener" class="dash">
+      <span class="dash-tag">Demo · use localmente</span>
       <div class="dash-name">🗂️ Mini-Pipeline de Clientes</div>
       <div class="dash-desc">Kanban dos seus clientes — do lead à entrega. Drag-and-drop, valores, próximas ações. localStorage, exporta JSON.</div>
       <div class="dash-link">dashboards/mini-pipeline.html →</div>
@@ -500,7 +580,23 @@ document.getElementById('btn-logout').addEventListener('click', () => {
   const saved = localStorage.getItem('toolkit_email');
   if (saved) showApp(saved);
   renderBlocks();
+  checkVideo();
 })();
+
+/* VIDEO FALLBACK */
+function checkVideo() {
+  const iframe = document.getElementById('tour-video');
+  const fallback = document.getElementById('video-fallback');
+  if (!iframe) return;
+  const src = iframe.getAttribute('src') || '';
+  const isPlaceholder = !src || src === 'ZOOM_RECORDING_URL_AQUI' || src.includes('PLACEHOLDER');
+  if (isPlaceholder) {
+    iframe.dataset.broken = '';
+    delete fallback.dataset.hidden;
+  } else {
+    fallback.dataset.hidden = '';
+  }
+}
 
 /* BLOCKS */
 function renderBlocks() {
