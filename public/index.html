@@ -243,33 +243,6 @@ section { padding: 32px 24px; max-width: 1100px; margin: 0 auto; }
 }
 .btn-upgrade:hover { background: #1a1a1a; }
 
-/* FOOTER */
-footer {
-  margin-top: 60px; padding: 36px 24px;
-  border-top: 1px solid var(--border); background: var(--bg2);
-}
-.foot-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-@media (max-width: 720px) { .foot-grid { grid-template-columns: 1fr; } }
-.foot-col h4 { font-size: 12px; color: var(--text2); text-transform: uppercase; letter-spacing: .8px; margin-bottom: 10px; }
-.foot-col a, .foot-col p { color: var(--text); font-size: 13px; display: block; margin: 4px 0; text-decoration: none; }
-.foot-col a:hover { color: var(--gold-light); }
-.optin { display: flex; gap: 8px; margin-top: 10px; }
-.optin input {
-  flex: 1; background: var(--bg3); border: 1px solid var(--border); border-radius: 8px;
-  padding: 9px 12px; font-size: 13px;
-}
-.optin input:focus { border-color: var(--gold); }
-.optin button {
-  padding: 9px 14px; background: var(--gold); color: #0a0a0f; font-weight: 600;
-  font-size: 12px; border-radius: 8px;
-}
-.optin button:hover { background: var(--gold-light); }
-.foot-bottom {
-  max-width: 1100px; margin: 24px auto 0; padding-top: 18px;
-  border-top: 1px solid var(--border); color: var(--text3); font-size: 12px;
-  text-align: center;
-}
-
 /* MODAL */
 .modal-bg {
   position: fixed; inset: 0; background: rgba(0,0,0,.75); backdrop-filter: blur(6px);
@@ -356,7 +329,6 @@ footer {
   <p>Skills do Claude Code + dashboards HTML standalone. Você instala em 15min e usa hoje mesmo com seu primeiro cliente.</p>
   <div class="hero-cta">
     <a href="#quickstart" class="btn-primary">▸ Instalar em 15min</a>
-    <a href="https://chat.whatsapp.com/PLACEHOLDER" target="_blank" rel="noopener" class="btn-outline">Entrar no grupo WhatsApp</a>
   </div>
 </header>
 
@@ -440,28 +412,6 @@ footer {
     <a href="https://zxlab.com.br/mission-control" target="_blank" rel="noopener" class="btn-upgrade">Conhecer ZX Control →</a>
   </div>
 </section>
-
-<footer>
-  <div class="foot-grid">
-    <div class="foot-col">
-      <h4>Comunidade</h4>
-      <a href="https://chat.whatsapp.com/PLACEHOLDER" target="_blank" rel="noopener">Grupo WhatsApp do Toolkit</a>
-      <a href="mailto:contato@zxlab.com.br">contato@zxlab.com.br</a>
-      <a href="https://zxlab.com.br" target="_blank" rel="noopener">zxlab.com.br</a>
-    </div>
-    <div class="foot-col">
-      <h4>Quer receber updates do toolkit?</h4>
-      <p style="color:var(--text2);font-size:12px;">A gente solta skill nova de vez em quando. Cola seu WhatsApp.</p>
-      <form class="optin" id="optin-form">
-        <input type="text" id="optin-phone" placeholder="+55 11 9..." autocomplete="off">
-        <button type="submit">Quero</button>
-      </form>
-    </div>
-  </div>
-  <div class="foot-bottom">
-    Toolkit Agência IA · ZX LAB · feito com Claude Code
-  </div>
-</footer>
 
 </div><!-- /app -->
 
@@ -614,18 +564,6 @@ function toggleQs() {
   else delete qs.dataset.collapsed;
 }
 window.toggleQs = toggleQs;
-
-/* OPTIN */
-document.getElementById('optin-form').addEventListener('submit', e => {
-  e.preventDefault();
-  const phone = document.getElementById('optin-phone').value.trim();
-  if (!phone) return;
-  const list = JSON.parse(localStorage.getItem('toolkit_optin') || '[]');
-  list.push({ phone, at: new Date().toISOString() });
-  localStorage.setItem('toolkit_optin', JSON.stringify(list));
-  document.getElementById('optin-phone').value = '';
-  toast('Pronto! Vamos te avisar.');
-});
 
 /* ESC */
 document.addEventListener('keydown', e => {
