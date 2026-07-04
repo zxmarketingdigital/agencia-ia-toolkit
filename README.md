@@ -105,7 +105,6 @@ agencia-ia-toolkit/
 │   ├── simulador-vendas/
 │   ├── analise-call/
 │   └── criar-thumbnail/
-└── docs/                         # quickstart, troubleshoot
 ```
 
 Cada skill é uma pasta com `SKILL.md` (frontmatter + workflow) e arquivos auxiliares.
