@@ -1,8 +1,8 @@
-// Toolkit Agência IA — Workers Assets entry
-// Quando configurado com [assets], o runtime serve estáticos automaticamente.
-// Este worker existe apenas pra satisfazer o requisito de `main` no wrangler.toml.
+// toolkit.zxlab.com.br → CONSOLIDADO na área única (25/Jun/2026)
+// O Toolkit virou a aba "Skills e Mini Apps" dentro da área de membros única.
+// Redirect 301 permanente para a área consolidada.
 export default {
-  async fetch(request, env) {
-    return env.ASSETS.fetch(request);
+  async fetch() {
+    return Response.redirect("https://agencia-ia-automatizada.zxlab.com.br/", 301);
   }
 };
