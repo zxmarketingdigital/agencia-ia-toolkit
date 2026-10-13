@@ -232,7 +232,8 @@ main { overflow-y: auto; max-height: 100vh; }
     <div class="section">
       <h3>Dados da Proposta</h3>
       <div class="field"><label>Nome do cliente</label><input id="i-client" type="text" placeholder="ex: Padaria do João"></div>
-      <div class="field"><label>Nome da sua agência</label><input id="i-agency" type="text" placeholder="ex: ZX Studio"></div>
+      <div class="field"><label>Nome da sua agência</label><input id="i-agency" type="text" placeholder="ex: Studio Digital"></div>
+      <div class="field"><label>Seu e-mail ou WhatsApp (vai no botão da proposta)</label><input id="i-contact" type="text" placeholder="ex: contato@suaagencia.com ou +55 11 99999-9999"><div id="contact-hint" class="hidden" style="color:#f87171;font-size:12px;margin-top:4px">Contato inválido: o botão não vai aparecer. Use um e-mail ou o WhatsApp com + e o código do país.</div></div>
       <div class="field">
         <label>Logo da sua agência (opcional)</label>
         <label class="logo-up">
@@ -451,6 +452,7 @@ function getState() {
   return {
     client: document.getElementById('i-client').value,
     agency: document.getElementById('i-agency').value,
+    contact: document.getElementById('i-contact').value,
     md: document.getElementById('i-md').value,
     color: document.getElementById('i-hex').value || '#D97706',
     logo: document.getElementById('logo-img').src && !document.getElementById('logo-img').classList.contains('hidden') ? document.getElementById('logo-img').src : ''
@@ -460,6 +462,7 @@ function setState(s) {
   if (!s) return;
   document.getElementById('i-client').value = s.client || '';
   document.getElementById('i-agency').value = s.agency || '';
+  document.getElementById('i-contact').value = s.contact || '';
   document.getElementById('i-md').value = s.md || '';
   if (s.color) {
     document.getElementById('i-hex').value = s.color;
@@ -492,10 +495,26 @@ function lighten(hex, pct) {
   return '#' + ((r << 16) | (g << 8) | b).toString(16).padStart(6,'0');
 }
 
+/* Botão "Quero seguir": e-mail vira mailto, telefone vira link do WhatsApp; vazio = sem botão. */
+function contactHref(contact, client) {
+  const c = (contact || '').trim();
+  if (!c) return '';
+  const assunto = 'Proposta aprovada' + (client ? ' — ' + client : '');
+  if (/^(?!\.)(?!.*\.\.)[A-Za-z0-9._%+-]*[A-Za-z0-9_%+-]@(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z]{2,}$/.test(c)) return 'mailto:' + c + '?subject=' + encodeURIComponent(assunto);
+  if (!/^\+?[\d\s().-]+$/.test(c)) return ''; /* só dígitos e separadores: ramal/texto invalida */
+  let d = c.replace(/\D/g, '');
+  if (c.startsWith('+')) { if (!/^[1-9]\d{7,14}$/.test(d)) return ''; }
+  else if (/^[1-9][1-9]9\d{8}$/.test(d)) d = '55' + d; /* celular BR com DDD */
+  else return ''; /* qualquer outro formato: exige + e o código do país */
+  return 'https://wa.me/' + d + '?text=' + encodeURIComponent('Oi! Quero seguir com a proposta' + (client ? ' para ' + client : '') + '.');
+}
+
 function render() {
   const s = getState();
   save(s);
   const target = document.getElementById('preview');
+  const href = contactHref(s.contact, s.client);
+  document.getElementById('contact-hint').classList.toggle('hidden', !(s.contact || '').trim() || !!href);
 
   if (!s.md.trim() && !s.client && !s.agency) {
     target.innerHTML = `<div class="hint">👋 Cole o output da skill <b>/criar-orcamento</b> no campo Conteúdo (Markdown) ao lado, ou clique em "Carregar exemplo" pra ver uma proposta de demonstração.</div>`;
@@ -518,16 +537,16 @@ function render() {
     </div>
     <div class="v-body">${md(s.md)}</div>
     <div class="v-cta">
-      <p>Pronto pra começar? Responde essa proposta com um "topo!" e a gente já agenda o kickoff.</p>
-      <a href="mailto:agencia@example.com?subject=${encodeURIComponent('Proposta — aprovada')}">Quero seguir</a>
+      <p>Pronto para começar? Responda esta proposta e a gente agenda o início do projeto.</p>
+      ${href ? `<a href="${esc(href)}" target="_blank" rel="noopener">Quero seguir</a>` : ''}
     </div>
-    <div class="v-foot">Proposta gerada com ZX LAB · Toolkit Agência IA</div>
+    ${s.agency ? `<div class="v-foot">Proposta preparada por ${esc(s.agency)}</div>` : ''}
   </article>`;
   target.innerHTML = html;
 }
 
 /* Bind sidebar */
-['i-client','i-agency','i-md'].forEach(id => document.getElementById(id).addEventListener('input', render));
+['i-client','i-agency','i-contact','i-md'].forEach(id => document.getElementById(id).addEventListener('input', render));
 document.getElementById('i-hex').addEventListener('input', e => {
   const v = e.target.value;
   if (/^#[0-9a-fA-F]{6}$/.test(v)) {
@@ -575,12 +594,12 @@ document.getElementById('btn-share').addEventListener('click', async () => {
   }
 });
 document.getElementById('btn-example').addEventListener('click', () => {
-  setState({ client: 'Padaria do João', agency: 'ZX Studio', md: EXAMPLE_MD, color: '#D97706', logo: '' });
+  setState({ client: 'Padaria do João', agency: 'Sua Agência', contact: 'contato@example.com', md: EXAMPLE_MD, color: '#D97706', logo: '' });
   render(); toast('Exemplo carregado.');
 });
 document.getElementById('btn-clear').addEventListener('click', () => {
   if (!confirm('Limpar todos os campos?')) return;
-  setState({ client: '', agency: '', md: '', color: '#D97706', logo: '' });
+  setState({ client: '', agency: '', contact: '', md: '', color: '#D97706', logo: '' });
   document.getElementById('logo-img').classList.add('hidden');
   document.getElementById('logo-img').src = '';
   document.getElementById('logo-text').textContent = 'Clique pra fazer upload';
